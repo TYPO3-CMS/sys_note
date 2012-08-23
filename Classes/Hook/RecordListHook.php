@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\SysNote\ViewHelpers;
+namespace TYPO3\CMS\SysNote\Hook;
 
 /***************************************************************
  *  Copyright notice
@@ -24,21 +24,25 @@ namespace TYPO3\CMS\SysNote\ViewHelpers;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 /**
- * ViewHelper to create a link to edit a note
+ * Hook for the list module
  *
  * @package TYPO3
  * @subpackage sys_note
  * @author Georg Ringer <typo3@ringerge.org>
  */
-class EditLinkViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper {
+class RecordListHook {
 
 	/**
-	 * @param integer $id
+	 * Add sys_notes as additional content to the footer of the list module
+	 *
+	 * @param array $params
+	 * @param \TYPO3\CMS\Recordlist\RecordList $parentObject
 	 * @return string
 	 */
-	public function render($id) {
-		$returnUrl = \TYPO3\CMS\Core\Utility\GeneralUtility::getIndpEnv('REQUEST_URI');
-		return ((($GLOBALS['BACK_PATH'] . 'alt_doc.php?&edit[sys_note][') . $id) . ']=edit&returnUrl=') . rawurlencode($returnUrl);
+	public function render(array $params = array(), \TYPO3\CMS\Recordlist\RecordList $parentObject) {
+		$renderer = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\SysNote\\SysNoteRenderer');
+		$sysNotes = $renderer->renderByPid($parentObject->id);
+		return $sysNotes;
 	}
 
 }
